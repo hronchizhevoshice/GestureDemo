@@ -12,6 +12,8 @@ import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
+import androidx.compose.foundation.gestures.rememberTransformableState
+import androidx.compose.foundation.gestures.transformable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -61,8 +64,30 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MainScreen(modifier: Modifier = Modifier) {
-    ScrollModifiers(modifier)
+    MultiTouchDemo(modifier)
 }
+@Composable
+fun MultiTouchDemo(modifier: Modifier = Modifier) {
+    var scale by remember { mutableStateOf(1f) }
+    val state = rememberTransformableState {
+            scaleChange, offsetChange, rotationChange ->
+        scale *= scaleChange
+    }
+    Box(contentAlignment = Alignment.Center, modifier = modifier.fillMaxSize()) {
+        Box(
+            Modifier
+                .graphicsLayer(
+                    scaleX = scale,
+                    scaleY = scale
+                )
+                .transformable(state = state)
+                .background(Color.Blue)
+                .size(100.dp)
+        )
+    }
+}
+
+/*
 @Composable
 fun ScrollModifiers(modifier: Modifier = Modifier) {
     val image = ImageBitmap.imageResource(id = R.drawable.vacation)
@@ -85,6 +110,7 @@ fun ScrollModifiers(modifier: Modifier = Modifier) {
         }
     }
 }
+ */
 
 /*
 @Composable
